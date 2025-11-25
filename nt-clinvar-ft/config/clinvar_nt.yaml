@@ -1,0 +1,44 @@
+paths:
+  data_root: "../../clinvar_data"
+  ref_dir: "../../clinvar_data/refs/GRCh38_gencode"
+  clinvar_vcf: "../../clinvar_data/clinvar_GRCh38.vcf.gz"
+  fasta: "../../clinvar_data/refs/GRCh38_gencode/GRCh38.primary_assembly.genome.fa"
+  processed_dir: "../../clinvar_data/processed_data"
+  output_dir: "./clinvar_outs_model1_cls"
+  paired_csv: "../../clinvar_data/processed_data/clinvar_paired_gencode.csv"
+  
+data:
+  seq_len: 1004          # bp
+  kmer: 6                # k-mer for tokenizer/model
+  max_tokens: 256       # 999 k-mers + 1 CLS
+  pos_label: "pathogenic"
+  neg_label: "benign"
+  chrom_split: true
+  val_chroms: ["8"]
+  test_chroms: ["18", "21"]
+  subset_per_class: 40000 # or e.g. 40000, null
+
+model:
+  name: "InstaDeepAI/nucleotide-transformer-500m-human-ref"
+  embed_method: "cls"   # mean | cls | central
+  run_name: null         # optional: override run subdir; if null → embed_<embed_method>
+
+training:
+  seed: 42
+  batch_size: 4
+  num_epochs: 5
+  lr: 5e-4
+  num_workers: 4
+  metric_for_best: "auroc"
+  logging_steps: 100
+
+lora:
+  enabled: true
+  r: 4
+  alpha: 8
+  dropout: 0.04
+  target_modules:
+    - "attention.self.query"
+    - "attention.self.key"
+    - "attention.self.value"
+    - "attention.output.dense"
