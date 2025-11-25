@@ -1,11 +1,20 @@
-*.ipynb
+# Jupyter checkpoint directories (block these)
 .ipynb_checkpoints/
+
+# Python cache files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+
+# Virtual environments
 env/
 venv/
 .venv/
 .env
+
+# Temporary/backup files
+*.tmp
+*.log
+*.bak
